@@ -26,9 +26,8 @@ public class FileWriteThread extends Thread {
         if (number == 100) {
             if (!endWrite) {
                 fileWriter.write(name + ": выиграл\n");
-                endWrite=true;
-            }
-            else fileWriter.write(name + ": проирал\n");
+                endWrite = true;
+            } else fileWriter.write(name + ": проирал\n");
         }
     }
 }
