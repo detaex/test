@@ -1,10 +1,11 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class FileWriteThread extends Thread {
     private String name;
     public static FileWriter fileWriter;
-    private static boolean endWrite = false;
+    public static AtomicBoolean endWrite = new AtomicBoolean(false);
 
     public FileWriteThread(String name) {
         this.name = name;
@@ -19,15 +20,16 @@ public class FileWriteThread extends Thread {
                 e.printStackTrace();
             }
         }
+        try {
+            if (endWrite.getAndSet(true)) {
+                fileWriter.write(name + ": проиграл\n");
+            } else fileWriter.write(name + ": выиграл\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static synchronized void write(String name, int number) throws IOException {
+    public void write(String name, int number) throws IOException {
         fileWriter.write(name + ": " + number + "\n");
-        if (number == 100) {
-            if (!endWrite) {
-                fileWriter.write(name + ": выиграл\n");
-                endWrite = true;
-            } else fileWriter.write(name + ": проирал\n");
-        }
     }
 }
